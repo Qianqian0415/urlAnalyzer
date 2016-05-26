@@ -1,4 +1,4 @@
-var jsdom = require('jsdom');
+﻿var jsdom = require('jsdom');
 var fs = require('fs');
 var xlsx = require('node-xlsx');
 

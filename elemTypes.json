@@ -4,10 +4,6 @@
 		"type": "链接"
 	},
 	{
-		"selector": "img",
-		"type": "图片"
-	},
-	{
 		"selector": "input[type='text']",
 		"type": "文本输入框"
 	},
@@ -17,7 +13,7 @@
 	},
 	{
 		"selector": "input[type='checkbox']",
-		"type": "多选框"
+		"type": "复选框"
 	},
 	{
 		"selector": "input[type='submit']",
@@ -33,7 +29,7 @@
 	},
 	{
 		"selector": "input[type='radio']",
-		"type": "单选框"
+		"type": "单选按钮"
 	},
 	{
 		"selector": "input[type='file']",

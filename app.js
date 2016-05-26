@@ -1,30 +1,38 @@
-const express = require('express');
-const fs = require('fs');
+const express = require('express');  //引用express框架
+const fs = require('fs');     //require引用内置模块fs
 const jsdom = require('jsdom');
 const bodyParser = require('body-parser');
 
-const elemTypes = JSON.parse(fs.readFileSync('./elemTypes.json', 'utf8'));
-const getTextSelectors = require('./getTextSelectors');
+const elemTypes = JSON.parse(fs.readFileSync('./elemTypes.json', 'utf8')); //用内置fs对象读取文件
+console.log(elemTypes);
+const getTextSelectors = require('./getTextSelectors');  //require引用自定义模块
 
-const app = express();
-app.use(bodyParser.json()); 
+const app = express();      //实例化Express
+app.use(bodyParser.json());               //引用Express提供的一些中间件
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use('/static', express.static('public'));
 
-app.post('/fetchUrl', (req, res) => {
-	var url = req.body.url;
+app.post('/fetchUrl', (req, res) => {    //req:Request（请求）方法，res:Response（响应）方法
+	var url = req.body.url;     //req.body对应解析过的请求表单，由bodyParser()中间件提供
 	var text = req.body.text;
 
-	fetchUrl(res, url, text);
+	fetchUrl(res, url, text);    //
 });
 
+//对获取的网址进行解析
 function fetchUrl(resp, url, text){
 	var selectors = getTextSelectors(text);
 	jsdom.env({
+         features: {
+         FetchExternalResources: ["script"],
+         ProcessExternalResources: ["script"],
+         SkipExternalResources: false
+    },
 	    url: url,
 	    done: (err, window) => {
             var document = window.document;
-            console.log("璇锋眰鎴愬姛, 姝ｅ湪瑙ｆ瀽...");
+            console.log("请求成功，正在解析...");
+            // console.log(document.body.innerHTML);
             var acc = 1;
 
             var res = elemTypes.reduce((memo, type) => {
@@ -49,7 +57,7 @@ function fetchUrl(resp, url, text){
             }).length;
             var coverRate = (coverLength / res.length * 100 + '').substr(0, 4) + '%';
 
-            resp.send({
+            resp.send({    //发送一个响应
             	coverRate: coverRate,
             	res: res
             });
@@ -57,7 +65,7 @@ function fetchUrl(resp, url, text){
 	});
 }
 
-// 妫�鏌ヨ妭鐐规槸鍚atch selector
+// 检查节点是否match selector
 function matchElem(elem, selectors){
 	const document = elem.ownerDocument;
 	const window = document.defaultView;
@@ -82,7 +90,7 @@ function matchElem(elem, selectors){
 	return matchers.join(',')
 }
 
-
+//获取该元素的xpath
 function getXPath(element) {
     var document = element.ownerDocument;
     if (element.id !== '')
